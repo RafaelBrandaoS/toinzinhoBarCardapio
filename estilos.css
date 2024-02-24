@@ -107,6 +107,10 @@ header {
 
 /* MAIN */
 
+main{
+  margin-top: 90px;
+}
+
 .produtos-titulo {
   border-bottom: 1px solid black;
   text-align: center;
@@ -150,7 +154,7 @@ footer p {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 30px 20px;
+  padding: 15px;
 }
 
 .contato p {
