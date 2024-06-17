@@ -2,11 +2,12 @@ from conexao import criar_conexao, fechar_conexao
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
+from flask import Flask
 
 
-def mostrar_produtos(con, tabela):
+def mostrar_produtos(con):
     cursor = con.cursor()
-    sql = f'SELECT * FROM {tabela} order by sessao, nome'
+    sql = 'SELECT * FROM produtos order by sessao, nome'
     cursor.execute(sql)
     linhas = cursor.fetchall()
     cursor.close()
@@ -241,7 +242,7 @@ def interfacie(con):
     
     
     def tb_linhas():
-        linhas = mostrar_produtos(con, 'produtos')
+        linhas = mostrar_produtos(con)
         
         for i, linha in enumerate(linhas):
             if i % 2 == 0:
