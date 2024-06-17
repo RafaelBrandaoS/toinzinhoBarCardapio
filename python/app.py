@@ -108,9 +108,9 @@ def interfacie(con):
     def editar():
         linha_selecionada = tree.selection()
         if len(linha_selecionada) == 1:
-            nome_produto =tree.item(linha_selecionada, 'values')[1]
+            nome_produto = tree.item(linha_selecionada, 'values')[1]
             id = tree.item(linha_selecionada, 'values')[0]
-            janela.title(f'Editando o produto {nome_produto}')
+            janela.title(f'Editar o produto {nome_produto}')
             fr_botoes.place(height=0)
             fr_editar = Frame(janela, borderwidth=1, relief='raised', bg='#fff')
             fr_editar.place(x=2, y=2, width=315, height=597)
@@ -157,29 +157,30 @@ def interfacie(con):
                 nom = nome.get()
                 prec = preco.get()
                 ses = sessao.get()
-                cursor = con.cursor()
-                if nom != '':
-                    sql_editar_nome = f"update produtos set nome = '{nom}' where id = {id}"
-                    cursor.execute(sql_editar_nome)
-                    messagebox.showinfo(title='SUCESSO', message='Atualizado com Sucesso!')
-                if prec != '':
-                    sql_editar_preco = f"update produtos set preco = '{prec}' where id = {id}"
-                    cursor.execute(sql_editar_preco)
-                    messagebox.showinfo(title='SUCESSO', message='Atualizado com Sucesso!')
-                if ses != '':
-                    sql_editar_sessao = f"update produtos set sessao = '{ses}' where id = {id}"
-                    cursor.execute(sql_editar_sessao)
-                    messagebox.showinfo(title='SUCESSO', message='Atualizado com Sucesso!')
                 if nom in '' and prec in '' and ses in '':
                     messagebox.showinfo(title='ERRO', message='Atualize pelo menos um valor ou clique em cancelar.')
-                cursor.close()
-                con.commit()
-                
-                for item in tree.get_children():
-                    tree.delete(item)
-                tb_linhas()
-                voltar()
-            
+                else:
+                    cursor = con.cursor()
+                    if nom != '':
+                        sql_editar_nome = f"update produtos set nome = '{nom}' where id = {id}"
+                        cursor.execute(sql_editar_nome)
+                        messagebox.showinfo(title='SUCESSO', message='Atualizado com Sucesso!')
+                    if prec != '':
+                        sql_editar_preco = f"update produtos set preco = '{prec}' where id = {id}"
+                        cursor.execute(sql_editar_preco)
+                        messagebox.showinfo(title='SUCESSO', message='Atualizado com Sucesso!')
+                    if ses != '':
+                        sql_editar_sessao = f"update produtos set sessao = '{ses}' where id = {id}"
+                        cursor.execute(sql_editar_sessao)
+                        messagebox.showinfo(title='SUCESSO', message='Atualizado com Sucesso!')
+                    cursor.close()
+                    con.commit()
+                    
+                    for item in tree.get_children():
+                        tree.delete(item)
+                    tb_linhas()
+                    voltar()
+                    
             ################################
             fr_btn = Frame(fr_editar, borderwidth=1, relief='solid', bg='#ddf')
             fr_btn.place(x=5, y=170, width=300, height=30)
@@ -200,8 +201,11 @@ def interfacie(con):
     def remover():
         linha_selecionada = tree.selection()
         if linha_selecionada != ():
-            nome_produto = tree.item(linha_selecionada, 'values')[1]
-            sn = messagebox.askquestion(title='CONFIRMAR', message=f"Tem certeza que Deseja excluir o produto '{nome_produto}'?")
+            nomes = []
+            for i in linha_selecionada:
+                nome = tree.item(i, 'values')[1]
+                nomes.append(nome)
+            sn = messagebox.askquestion(title='CONFIRMAR', message=f"Tem certeza que Deseja excluir os produtos '{nomes}'?")
             sn
             if sn == 'yes':
                 lista_id = []
