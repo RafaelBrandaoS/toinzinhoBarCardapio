@@ -43,9 +43,10 @@
 
 header {
   position: fixed;
-  width: 100vw;
+  width: 100%;
   top: 0;
-  z-index: 1000;
+  left: 0;
+  z-index: 1;
 }
 
 .nav-bar {
@@ -125,14 +126,11 @@ header {
     transform: scale(1.04, 1.04);
   }
 
-  .nav-item {
+  .nav-link {
     margin: 16px 0;
   }
   .nav-menu.active {
     left: 0;
-  }
-  .nav-link {
-    padding: 15px 30vw;
   }
 }
 
@@ -140,17 +138,15 @@ header {
 
 /* MAIN */
 
-main{
-  margin-top: 90px;
-}
-
 .produtos-titulo {
-  border-bottom: 1px solid black;
+  padding-top: 74px;
   text-align: center;
 }
 
 .produtos-titulo h2 {
-  margin: 20px 0;
+  padding: 20px;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 .produto {
@@ -160,7 +156,9 @@ main{
   background-color: #fff;
 }
 .produto-img {
+  padding: 5px;
   width: 150px;
+  height: 150px;
 }
 .produto-nome {
   font-size: 1em;

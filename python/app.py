@@ -1,7 +1,9 @@
 from conexao import criar_conexao, fechar_conexao
 from tkinter import *
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import ttk, messagebox, filedialog
+import shutil
+import pathlib
+import os
 from flask import Flask
 
 
@@ -12,6 +14,17 @@ def mostrar_produtos(con):
     linhas = cursor.fetchall()
     cursor.close()
     return linhas
+
+
+def imagem(con):
+    for produto in mostrar_produtos(con):
+        cursor = con.cursor()
+        nome = produto[1].lower().replace(' ', '')
+        id = produto[0]
+        sql = f"update produtos set img = 'imagens/produtos/{nome}.jpg' where id = {id}"
+        cursor.execute(sql)
+        cursor.close()
+        con.commit()
 
 
 def interfacie(con):
@@ -37,74 +50,119 @@ def interfacie(con):
             fr_botoes.place(x=2, y=2, width=315, height=597)
         
         
-        btn_voltar = Button(fr_adicionar, text='Voltar', command=voltar)
-        btn_voltar.place(x=5, y=5)
+        def select_img():
+            global caminho
+            caminho = filedialog.askopenfilename(filetypes=[("Arquivos JPEG", "*.jpeg"), ("Arquivos PNG", "*.png"), ("Arquivos JPG", "*.jpg")])
+            if caminho:
+                imagem.config(text=caminho)
+            else:
+                print("Nenhum arquivo selecionado")
         
-        Label(fr_adicionar, text='ADICIONAR NOVO PRODUTO', bg='#fff', width=300, height=45).place(x=5, y=33, width=300, height=45)
+        def adicionar_imagem():
+            global estenssao
+            if caminho:
+                destino_dir = '.\\static\\imagens\\produtos'
+                
+                estenssao = os.path.splitext(caminho)[1]
+                nome_arquivo = f'{nome.get()}{estenssao}'
+                
+                destino = f'{destino_dir}\\{nome_arquivo}'
+                
+                shutil.copyfile(caminho, destino)
+            else:
+                print('erro!!!')
+        
         
         ################################
-        fr_nome = Frame(fr_adicionar, borderwidth=1, relief='solid', bg='#ddf')
-        fr_nome.place(x=5, y=80, width=300, height=28)
+        
+        btn_voltar = Button(fr_adicionar, text='Voltar', command=voltar)
+        btn_voltar.pack(padx=5, pady=5, anchor='w')
+        
+        ################################
+        
+        titulo = Label(fr_adicionar, text='ADICIONAR NOVO PRODUTO', bg='#fff')
+        titulo.pack(padx=5, pady=10)
+        
+        fr_nome = Frame(fr_adicionar, borderwidth=1, relief='solid', bg='#ddf', width=300, height=28)
+        fr_nome.pack(padx=5, pady=2)
         
         Label(fr_nome, text='Nome:', bg='#ddf').place(x=3, y=3, width=90, height=20)
         
         nome = Entry(fr_nome)
         nome.place(x=95, y=3, width=200, height=20)
-        ################################
         
         ################################
-        fr_preco = Frame(fr_adicionar, borderwidth=1, relief='solid', bg='#ddf')
-        fr_preco.place(x=5, y=110, width=300, height=28)
+        
+        fr_preco = Frame(fr_adicionar, borderwidth=1, relief='solid', bg='#ddf', width=300, height=28)
+        fr_preco.pack(padx=5, pady=2)
         
         Label(fr_preco, text='Preço:', bg='#ddf').place(x=3, y=3, width=90, height=20)
         
         preco = Entry(fr_preco)
         preco.place(x=95, y=3, width=200, height=20)
-        ################################
         
         ################################
-        fr_sessao = Frame(fr_adicionar, borderwidth=1, relief='solid', bg='#ddf')
-        fr_sessao.place(x=5, y=140, width=300, height=28)
+        
+        fr_sessao = Frame(fr_adicionar, borderwidth=1, relief='solid', bg='#ddf', width=300, height=28)
+        fr_sessao.pack(padx=5, pady=2)
         
         Label(fr_sessao, text='Sessão:', bg='#ddf').place(x=3, y=3, width=90, height=20)
         
         sessao = Entry(fr_sessao)
         sessao.place(x=95, y=3, width=200, height=20)
+        
         ################################
         
+        fr_imagem = Frame(fr_adicionar, borderwidth=1, relief='solid', bg='#ddf', width=300, height=30)
+        fr_imagem.pack(padx=5, pady=2)
         
+        Button(fr_imagem, text='Select IMG:', command=select_img).place(x=210, y=3, width=85, height=23)
+        
+        imagem = Label(fr_imagem, text='selecione uma imagem', bg='#fff', font=('arial', '7', 'bold'), anchor='w')
+        imagem.place(x=3, y=3, width=200, height=20)
+        
+        ################################
         
         def salvar():
             nom = nome.get()
             prec = preco.get()
             ses = sessao.get()
+            img = ''
+            global caminho
+            try:
+                adicionar_imagem()
+                img = f'imagens/produtos/{nom}{estenssao}'
+            except:
+                img = ''
             
-            if '' not in [ses, nom, prec, ses]:
+            if '' not in [ses, nom, prec, ses, img]:
                 cursor = con.cursor()
-                sql_inserir = f"INSERT INTO produtos (id, nome, preco, sessao) VALUES {('', nom, prec, ses)}"
+                sql_inserir = f"INSERT INTO produtos (id, nome, preco, sessao, img) VALUES {('', nom, prec, ses, img)}"
                 cursor.execute(sql_inserir)
                 cursor.close()
                 con.commit()
                 for item in tree.get_children():
                     tree.delete(item)
                 tb_linhas()
+                voltar()
                 messagebox.showinfo(title='sucesso', message=f'Produto {nom} adicionado com sucesso!')
             else:
                 messagebox.showinfo(title='ERRO', message='Digite todos os Dados!!!')
         
         
         ################################
-        fr_btn = Frame(fr_adicionar, borderwidth=1, relief='solid', bg='#ddf')
-        fr_btn.place(x=5, y=170, width=300, height=30)
+        
+        fr_btn = Frame(fr_adicionar, borderwidth=1, relief='solid', bg='#ddf', width=300, height=30)
+        fr_btn.pack(padx=5, pady=2)
+        
         
         cancel = Button(fr_btn, text='Cancelar', command=voltar)
         cancel.place(x=2, y=2, width=96, height=24)
         
         salv = Button(fr_btn, text='Adicionar', command=salvar)
         salv.place(x=200, y=2, width=96, height=24)
-        ################################
         
-    
+        ################################
     
     def editar():
         linha_selecionada = tree.selection()
@@ -120,14 +178,38 @@ def interfacie(con):
                 fr_editar.place(height=0)
                 fr_botoes.place(x=2, y=2, width=315, height=597)
             
-            btn_voltar = Button(fr_editar, text='Voltar', command=voltar)
-            btn_voltar.place(x=5, y=5)
+            def select_nova_img():
+                global novo_caminho
+                novo_caminho = filedialog.askopenfilename(filetypes=[("Arquivos JPEG", "*.jpeg"), ("Arquivos PNG", "*.png"), ("Arquivos JPG", "*.jpg")])
+                if novo_caminho:
+                    imagem.config(text=novo_caminho)
+                else:
+                    print("Nenhum arquivo selecionado")
+                
+                
+            def adicionar_nova_imagem():
+                global novo_caminho
+                global edit_estenssao
+                destino_dir = '.\\static\\imagens\\produtos'
+                
+                edit_estenssao = os.path.splitext(novo_caminho)[1]
+                nome_arquivo = f'{nome_produto}{edit_estenssao}'
+                
+                destino = f'{destino_dir}\\{nome_arquivo}'
+                
+                shutil.copyfile(novo_caminho, destino)
+                novo_caminho = ''
             
-            Label(fr_editar, text=f"EDITANDO PRODUTO '{nome_produto}'", bg='#fff', width=300, height=45).place(x=5, y=33, width=300, height=45)
+            btn_voltar = Button(fr_editar, text='Voltar', command=voltar)
+            btn_voltar.pack(padx=5, pady=5, anchor='w')
+            
+            Label(fr_editar, text=f"EDITANDO PRODUTO '{nome_produto}'", bg='#fff').pack(padx=5, pady=10)
             
             ################################
-            fr_nome = Frame(fr_editar, borderwidth=1, relief='solid', bg='#ddf')
-            fr_nome.place(x=5, y=80, width=300, height=28)
+            
+            ################################
+            fr_nome = Frame(fr_editar, borderwidth=1, relief='solid', bg='#ddf', width=300, height=28)
+            fr_nome.pack(padx=5, pady=2)
             
             Label(fr_nome, text='Novo Nome:', bg='#ddf').place(x=3, y=3, width=90, height=20)
             
@@ -136,8 +218,8 @@ def interfacie(con):
             ################################
             
             ################################
-            fr_preco = Frame(fr_editar, borderwidth=1, relief='solid', bg='#ddf')
-            fr_preco.place(x=5, y=110, width=300, height=28)
+            fr_preco = Frame(fr_editar, borderwidth=1, relief='solid', bg='#ddf', width=300, height=28)
+            fr_preco.pack(padx=5, pady=2)
             
             Label(fr_preco, text='Novo Preço:', bg='#ddf').place(x=3, y=3, width=90, height=20)
             
@@ -146,34 +228,54 @@ def interfacie(con):
             ################################
             
             ################################
-            fr_sessao = Frame(fr_editar, borderwidth=1, relief='solid', bg='#ddf')
-            fr_sessao.place(x=5, y=140, width=300, height=28)
+            fr_sessao = Frame(fr_editar, borderwidth=1, relief='solid', bg='#ddf', width=300, height=28)
+            fr_sessao.pack(padx=5, pady=2)
             
             Label(fr_sessao, text='Novo Sessão:', bg='#ddf').place(x=3, y=3, width=90, height=20)
             
             sessao = Entry(fr_sessao)
             sessao.place(x=95, y=3, width=200, height=20)
             #################################
+            
+            #################################
+            fr_imagem = Frame(fr_editar, borderwidth=1, relief='solid', bg='#ddf', width=300, height=30)
+            fr_imagem.pack(padx=5, pady=2)
+            
+            Button(fr_imagem, text='Nova IMG:', command=select_nova_img).place(x=210, y=3, width=85, height=23)
+            
+            imagem = Label(fr_imagem, text='', bg='#fff')
+            imagem.place(x=3, y=3, width=200, height=20)
+            ################################
             def salvar():
+                global edit_estenssao
+                global novo_caminho
                 nom = nome.get()
                 prec = preco.get()
                 ses = sessao.get()
-                if nom in '' and prec in '' and ses in '':
-                    messagebox.showinfo(title='ERRO', message='Atualize pelo menos um valor ou clique em cancelar.')
-                else:
+                try:
+                    adicionar_nova_imagem()
+                    img_atualizada = 'ok'
+                except:
+                    img_atualizada = ''
+                if '' in nom and '' in prec and '' in ses and '' in img_atualizada:
                     cursor = con.cursor()
                     if nom != '':
                         sql_editar_nome = f"update produtos set nome = '{nom}' where id = {id}"
                         cursor.execute(sql_editar_nome)
-                        messagebox.showinfo(title='SUCESSO', message='Atualizado com Sucesso!')
+                        messagebox.showinfo(title='SUCESSO', message='Nome atualizado com Sucesso!')
                     if prec != '':
                         sql_editar_preco = f"update produtos set preco = '{prec}' where id = {id}"
                         cursor.execute(sql_editar_preco)
-                        messagebox.showinfo(title='SUCESSO', message='Atualizado com Sucesso!')
+                        messagebox.showinfo(title='SUCESSO', message='Preço atualizado com Sucesso!')
                     if ses != '':
                         sql_editar_sessao = f"update produtos set sessao = '{ses}' where id = {id}"
                         cursor.execute(sql_editar_sessao)
-                        messagebox.showinfo(title='SUCESSO', message='Atualizado com Sucesso!')
+                        messagebox.showinfo(title='SUCESSO', message='Sessão atualizada com Sucesso!')
+                    if img_atualizada != '':
+                        sql_editar_caminho = f"update produtos set img = 'imagens/produtos/{nome_produto}{edit_estenssao}' where id = {id}"
+                        cursor.execute(sql_editar_caminho)
+                        messagebox.showinfo(title='SUCESSO', message='Imagem atualizada com Sucesso!')
+                    
                     cursor.close()
                     con.commit()
                     
@@ -181,10 +283,11 @@ def interfacie(con):
                         tree.delete(item)
                     tb_linhas()
                     voltar()
-                    
+                else:
+                    messagebox.showinfo(title='ERRO', message='Atualize pelo menos um valor ou clique em cancelar.')
             ################################
-            fr_btn = Frame(fr_editar, borderwidth=1, relief='solid', bg='#ddf')
-            fr_btn.place(x=5, y=170, width=300, height=30)
+            fr_btn = Frame(fr_editar, borderwidth=1, relief='solid', bg='#ddf', width=300, height=30)
+            fr_btn.pack(padx=5, pady=2)
             
             cancel = Button(fr_btn, text='Cancelar', command=voltar)
             cancel.place(x=2, y=2, width=96, height=24)
@@ -207,12 +310,14 @@ def interfacie(con):
                 nome = tree.item(i, 'values')[1]
                 nomes.append(nome)
             sn = messagebox.askquestion(title='CONFIRMAR', message=f"Tem certeza que Deseja excluir os produtos '{nomes}'?")
-            sn
             if sn == 'yes':
                 lista_id = []
+                lista_nome = []
                 for linha in linha_selecionada:
                     id = tree.item(linha, 'values')[0]
+                    nome = tree.item(linha, 'values')[1]
                     lista_id.append(id)
+                    lista_nome.append(nome)
                 for id in lista_id:
                     cursor = con.cursor()
                     sql = f"delete from produtos where id = '{id}'"
@@ -222,6 +327,17 @@ def interfacie(con):
                     for item in tree.get_children():
                         tree.delete(item)
                     tb_linhas()
+                for nome in lista_nome:
+                    try:
+                        os.unlink(f'.\static\imagens\produtos\{nome}.jpg')
+                    except:
+                        try:
+                            os.unlink(f'.\static\imagens\produtos\{nome}.png')
+                        except:
+                            try:
+                                os.unlink(f'.\static\imagens\produtos\{nome}.jpeg')
+                            except:
+                                print(nome)
         else:
             messagebox.showinfo(title='ERRO', message='Selecione um ou mais produtos a sere excluidos!')
     

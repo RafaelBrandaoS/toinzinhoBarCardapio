@@ -4,7 +4,12 @@ const navMenu = document.querySelector(".nav-menu");
 hamburger.addEventListener("click", () => {
     hamburger.classList.toggle('active');
     navMenu.classList.toggle('active');
-})
+});
+
+navMenu.addEventListener("click", () => {
+    hamburger.classList.remove('active');
+    navMenu.classList.remove('active');
+});
 
 var item = document.querySelectorAll("[data-anima]")
 

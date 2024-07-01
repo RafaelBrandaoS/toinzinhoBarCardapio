@@ -4,24 +4,12 @@ from python.conexao import criar_conexao, fechar_conexao
 
 def lista_produtos(con):
     cursor = con.cursor()
-    sql = 'SELECT * FROM produtos'
+    sql = 'SELECT * FROM produtos order by sessao, nome'
     cursor.execute(sql)
     produtos = cursor.fetchall()
     cursor.close()
-    con.commit()
+    con.commit()    
     return produtos
-
-
-def imagem(con):
-    for produto in lista_produtos(con):
-        cursor = con.cursor()
-        nome = produto[1].lower()
-        id = produto[0]
-        sql = f"update produtos set img = 'imagens/produtos/{nome}.jpg' where id = {id}"
-        cursor.execute(sql)
-        cursor.close()
-        con.commit()
-    return lista_produtos(con)
 
 
 def lista_sessoes(con):
@@ -47,7 +35,6 @@ def site(con):
 def main():
     con = criar_conexao('localhost', 'root', '', 'produtos')
     
-    imagem(con)
     site(con)
     
     fechar_conexao(con)
