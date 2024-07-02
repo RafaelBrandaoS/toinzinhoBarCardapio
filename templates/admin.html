@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar o Cardápio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+    <div class="main">
+        <section class="container-1">
+            <h2 class="titulo">Gerenciamento do cardápio</h2>
+            <div class="butao-container">
+                <button class="butao">Adicionar</button>
+                <button class="butao">Editar</button>
+                <button class="butao">remover</button>
+            </div>
+        </section>
+        <section class="container-2">
+            <h2 class="titulo">Lista de produtos</h2>
+            <div class="tabela-container">
+                <table class="tabela">
+                    <thead>
+                        <tr class="cabecalho-tabela">
+                            <th>Id</th>
+                            <th>Nome</th>
+                            <th>Preço</th>
+                            <th>Sessão</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for linha in produtos %}
+                        <tr class="linha">
+                            <td class="dado">{{ linha[0] }}</td>
+                            <td class="dado">{{ linha[1] }}</td>
+                            <td class="dado">{{ linha[2] }}</td>
+                            <td class="dado">{{ linha[3] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

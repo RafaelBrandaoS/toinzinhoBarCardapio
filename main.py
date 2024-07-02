@@ -29,6 +29,11 @@ def site(con):
         sessao = lista_sessoes(con)
         produtos = lista_produtos(con)
         return render_template('index.html', sessao=sessao, produtos=produtos)
+    
+    @app.route('/admin')
+    def admin():
+        produtos = lista_produtos(con)
+        return render_template('admin.html', produtos=produtos)
 
     app.run(debug=True)
 
