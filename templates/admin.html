@@ -8,12 +8,10 @@
 </head>
 <body>
     <div class="main">
-        <section class="container-1">
+        <section class="container-1" id="inicial">
             <h2 class="titulo">Gerenciamento do cardápio</h2>
             <div class="butao-container">
-                <button class="butao">Adicionar</button>
-                <button class="butao">Editar</button>
-                <button class="butao">remover</button>
+                <a class="butao" id="btn-adicionar" href="{{ url_for('admin.add_produto') }}">Adicionar</a>
             </div>
         </section>
         <section class="container-2">
@@ -30,7 +28,7 @@
                     </thead>
                     <tbody>
                         {% for linha in produtos %}
-                        <tr class="linha">
+                        <tr class="linha" id="{{ linha[0] }}" onclick="clicou('{{ linha[0] }}')">
                             <td class="dado">{{ linha[0] }}</td>
                             <td class="dado">{{ linha[1] }}</td>
                             <td class="dado">{{ linha[2] }}</td>
@@ -40,7 +38,27 @@
                     </tbody>
                 </table>
             </div>
+            {% for linha in produtos %}
+            <div class="mais" id="produto-{{ linha[0] }}">
+                <h2>PRODUTO "{{ linha[1] }}"</h2>
+                <div class="detalhes">
+                    <h3>Detalhes:</h3>
+                    <p>id:     {{ linha[0] }}</p>
+                    <p>nome:   {{ linha[1] }}</p>
+                    <p>preço:  {{ linha[2] }}</p>
+                    <p>sessão: {{ linha[3] }}</p>
+                    <p>caminho:{{ linha[4] }}</p>
+                    <img src="{{ url_for('static', filename=linha[4]) }}" alt="img-produto">
+                </div>
+                <div class="btn-container">
+                    <a class="butao" href="{{ url_for('admin.admin') }}">Voltar</a>
+                    <a class="butao" href="{{ url_for('admin.delet_produto', produto_id=linha[0]) }}">Deletar</a>
+                    <a class="butao" href="{{ url_for('admin.edit_produto', produto_id=linha[0]) }}">Editar</a>
+                </div>
+            </div>
+            {% endfor %}
         </section>
     </div>
+    <script src="{{ url_for('static', filename='admin.js') }}"></script>
 </body>
 </html>

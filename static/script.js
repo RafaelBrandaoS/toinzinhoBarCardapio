@@ -13,6 +13,8 @@ navMenu.addEventListener("click", () => {
 
 var item = document.querySelectorAll("[data-anima]")
 
+console.log(item)
+
 function animeScroll() {
     let windowTop = window.pageYOffset + window.innerHeight * 1
 
@@ -29,4 +31,4 @@ animeScroll()
 
 window.addEventListener("scroll", function() {
     animeScroll()
-})
+});
