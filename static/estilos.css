@@ -7,6 +7,14 @@
   font-family: sans-serif;
 }
 
+body {
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
+  border: 1px solid black;
+  border-radius: 8px;
+}
+
 /* GERAIS */
 
 /* ANIMAÇÕES */
@@ -40,16 +48,16 @@
 /* ANIMAÇÕES */
 
 /* NAV BAR */
-
 header {
   position: fixed;
-  width: 100%;
   top: 0;
-  left: 0;
+  width: 100%;
   z-index: 100;
 }
 
 .nav-bar {
+  max-width: 700px;
+  border-radius: 8px 8px 0px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -59,7 +67,7 @@ header {
 }
 .nav-logo img {
   height: 70px;
-  padding: 10px;
+  padding: 5px;
 }
 .nav-menu {
   display: flex;
@@ -89,7 +97,7 @@ header {
   background-color: #fff;
   transition: all 0.3s ease-in-out;
 }
-@media (max-width: 768px) {
+@media (max-width: 2000px) {
   .hamburguer {
     display: block;
     transition: .2s all;
@@ -110,7 +118,8 @@ header {
   }
   .nav-menu {
     position: fixed;
-    left: -100%;
+    left: -200%;
+    opacity: 0;
     flex-direction: column;
     gap: 0;
     top: 70px;
@@ -131,12 +140,17 @@ header {
   }
   .nav-menu.active {
     left: 0;
+    opacity: initial;
   }
 }
 
 /* NAV BAR */
 
 /* MAIN */
+
+main {
+  overflow: hidden;
+}
 
 .produtos-titulo {
   padding-top: 74px;
@@ -201,6 +215,9 @@ footer p {
 
 .social a img {
   width: 30px;
+  background-color: #fff;
+  padding: 2px;
+  border-radius: 90px;
 }
 
 .social a {

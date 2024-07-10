@@ -51,7 +51,7 @@
                     <img src="{{ url_for('static', filename=linha[4]) }}" alt="img-produto">
                 </div>
                 <div class="btn-container">
-                    <a class="butao" href="{{ url_for('admin.admin') }}">Voltar</a>
+                    <a class="butao" id="voltar-{{ linha[0] }}" href="#">Voltar</a>
                     <a class="butao" href="{{ url_for('admin.delet_produto', produto_id=linha[0]) }}">Deletar</a>
                     <a class="butao" href="{{ url_for('admin.edit_produto', produto_id=linha[0]) }}">Editar</a>
                 </div>

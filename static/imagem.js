@@ -1,53 +1,59 @@
 const imagem = document.getElementById('img');
 const previw = document.getElementById('previw');
 
-imagem.addEventListener("change", () => {
-    if(imagem.files) {
-        const img = imagem.files[0];
-        console.log(img)
-        if(img['size'] < 2097152) {
-            const leitor = new FileReader();
 
-            console.log(img['size'])
+if(imagem) {
+    imagem.addEventListener("change", () => {
+        if(imagem.files) {
+            const img = imagem.files[0];
+            console.log(img);
+            if(img['size'] < 2097152) {
+                const leitor = new FileReader();
 
-            leitor.onload = () => {
-                previw.src = leitor.result;
+                console.log(img['size']);
+
+                leitor.onload = () => {
+                    previw.src = leitor.result;
+                }
+                
+                leitor.readAsDataURL(img);
+            } else {
+                alert('Erro! \nArquivo muito grande. Maximo suportado 2MB.');
             }
-            
-            leitor.readAsDataURL(img)
-        } else {
-            alert('Erro! \nArquivo muito grande. Maximo suportado 2MB.')
         }
-    }
-});
+    });
 
-previw.addEventListener('click', () => {
-    imagem.click()
-})
+    previw.addEventListener('click', () => {
+        imagem.click();
+    });
+}
 
-const nova_imagem = document.getElementById('nova-img');
-const novo_previw = document.getElementById('edit-previw');
+const nova_imagem = document.querySelector('#nova-img');
+const novo_previw = document.querySelector('#edit-previw');
 
-nova_imagem.addEventListener('change', (e) => {
-    if(nova_imagem.files) {
-        const n_img = nova_imagem.files[0];
-        console.log(n_img)
-        if(n_img['size'] < 2097152) {
-            const n_leitor = new FileReader();
+if(nova_imagem) {
+    nova_imagem.addEventListener("change", () => {
+        if(nova_imagem.files) {
+            const n_img = nova_imagem.files[0];
+            console.log(n_img);
+            if(n_img['size'] < 2097152) {
+                const n_leitor = new FileReader();
 
-            console.log(n_img['size'])
+                console.log(n_img['size']);
 
-            n_leitor.onload = () => {
-                previw.src = n_leitor.result;
+                n_leitor.onload = () => {
+                    novo_previw.src = n_leitor.result;
+                }
+                
+                n_leitor.readAsDataURL(n_img);
+            } else {
+                alert('Erro! \nArquivo muito grande. Maximo suportado 2MB.');
             }
-            
-            n_leitor.readAsDataURL(img)
-        } else {
-            alert('Erro! \nArquivo muito grande. Maximo suportado 2MB.')
         }
-    }
-});
+    });
 
-novo_previw.addEventListener('click', () => {
-    nova_imagem.click()
-})
+    novo_previw.addEventListener('click', () => {
+        console.log({'status': 'clicou'});
+        nova_imagem.click();
+    });
+}

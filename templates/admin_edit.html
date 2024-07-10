@@ -10,7 +10,7 @@
     <div class="main">
         <section class="container-editar" id="editar">
             <a class="butao" href="{{ url_for('admin.admin') }}">voltar</a>
-            <form action="{{ url_for('admin.edit_update', produto_id=dados['id']) }}" method="post" enctype="multipart/form-data" class="form-adicionar" autocomplete="off">
+            <form action="{{ url_for('admin.edit_update', produto_id=dados['id']) }}" method="POST" enctype="multipart/form-data" class="form-adicionar" autocomplete="off">
                 <h2 class="titulo">Editando Produto</h2>
                 <label for="novo-nome">
                     Novo Nome: <input type="text" id="novo-nome" name="novo-nome" value="{{ dados['nome'] }}">
@@ -27,7 +27,7 @@
                 <img id="edit-previw" src="{{ url_for('static', filename=dados['imagem']) }}" alt="imagem!!">
                 <div class="form-butoes">
                     <a class="butao" href="{{ url_for('admin.admin') }}">voltar</a>
-                    <button class="butao" type="submit">Adicionar</button>
+                    <button class="butao" type="submit">Salvar</button>
                 </div>
             </form>
         </section>

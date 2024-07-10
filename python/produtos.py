@@ -5,7 +5,7 @@ import os
 
 
 def lista_produtos():
-    con = criar_conexao('localhost', 'root', '', 'produtos')
+    con = criar_conexao()
     cursor = con.cursor()
     sql = 'SELECT * FROM produtos order by sessao, nome'
     cursor.execute(sql)
@@ -26,13 +26,13 @@ def lista_sessoes():
 
 
 def salvar_dados(imagem, nome, preco, sessao):
-    con = criar_conexao('localhost', 'root', '', 'produtos')
+    con = criar_conexao()
     nome_imagem = imagem.filename
     estenssao = nome_imagem.split('.')[1]
     cursor = con.cursor()
     img = f'imagens/produtos/{nome}.{estenssao}'
-    sql = "insert into produtos (id, nome, preco, sessao, img) values (%s, %s, %s, %s, %s)"
-    valores = ('', nome, preco, sessao, img)
+    sql = "insert into produtos (nome, preco, sessao, img) values (%s, %s, %s, %s)"
+    valores = (nome, preco, sessao, img)
     cursor.execute(sql, valores)
     cursor.close()
     con.commit()
@@ -51,15 +51,36 @@ def salva_imagem(imagem, nome):
         imagem.save(save)
         
         shutil.move(f'.\\temp\\{nome_imagem}', destino_final)
-        
+
+
 def pegar_dados(produto_id):
-    con = criar_conexao('localhost', 'root', '', 'produtos')
+    con = criar_conexao()
     cursor = con.cursor()
     sql = f'select * from produtos where id = {produto_id}'
     cursor.execute(sql)
-    d = cursor.fetchall()
+    d = cursor.fetchall()[0]
     cursor.close()
     fechar_conexao(con)
-    dados = {'id': d[0][0], 'nome': d[0][1], 'preco': d[0][2], 'sessao': d[0][3], 'imagem': d[0][4]}
+    dados = {'id': d[0], 'nome': d[1], 'preco': d[2], 'sessao': d[3], 'imagem': d[4]}
     return dados
-    
+
+
+def atualizar_dados(produto_id, imagem, nome, preco, sessao):
+    con = criar_conexao()
+    cursor = con.cursor()
+    sql = f"update produtos set nome = '{nome}', preco = '{preco}', sessao = '{sessao}', img = '{imagem}'  where id = '{produto_id}'"
+    cursor.execute(sql)
+    cursor.close
+    con.commit()
+    fechar_conexao(con)
+
+
+def deletar(produto_id, imagem=''):
+    con = criar_conexao()
+    cursor = con.cursor()
+    sql = f"delete from produtos where id = {produto_id}"
+    cursor.execute(sql)
+    cursor.close()
+    con.commit()
+    fechar_conexao(con)
+    os.unlink(imagem)
