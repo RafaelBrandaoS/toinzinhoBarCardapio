@@ -8,13 +8,13 @@ def admin():
     " html que mostra a lista de produtos e os butões adicionar, editar e deletar produtos "
     produtos = lista_produtos()
     return render_template('admin.html', produtos=produtos)
-    
 
 
 @admin_route.route('/adicionar')
 def add_produto():
     " formulário para adicionar novo produto "
     return render_template('admin_add.html')
+
 
 @admin_route.route('/adicionar/update', methods=['POST'])
 def add_update():
@@ -54,6 +54,7 @@ def edit_update(produto_id):
     atualizar_dados(produto_id, imagem, nome, preco, sessao)
     
     return render_template('edit_sucess.html', nome=nome, func='Editado')
+
 
 @admin_route.route('/<int:produto_id>/deletar')
 def delet_produto(produto_id):
