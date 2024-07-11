@@ -8,7 +8,7 @@ def main():
     app.register_blueprint(home_route)
     app.register_blueprint(admin_route, url_prefix='/admin')
     
-    app.run(debug=True)
+    app.run()
     
 
 if __name__ == '__main__':
